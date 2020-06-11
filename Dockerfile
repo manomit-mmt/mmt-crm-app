@@ -1,12 +1,12 @@
 
-FROM nginx:alpine as nginxProxy
+FROM nginx:alpine as nginxproxy
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
 RUN apk update && apk add bash
 
 
-FROM node:12.17.0-alpine as usersApp
+FROM node:12.17.0-alpine as usersapp
 WORKDIR /usr/src/app
 
 COPY ./users/package*.json ./
@@ -19,7 +19,7 @@ EXPOSE 5000
 CMD [ "npm", "start" ]
 
 
-FROM node:12.17.0-alpine as settingsApp
+FROM node:12.17.0-alpine as settingsapp
 WORKDIR /usr/src/app
 
 COPY ./settings/package*.json ./
@@ -32,7 +32,7 @@ EXPOSE 5001
 CMD [ "npm", "start" ]
 
 
-FROM node:12.17.0-alpine as tasksApp
+FROM node:12.17.0-alpine as tasksapp
 WORKDIR /usr/src/app
 
 COPY ./tasks/package*.json ./

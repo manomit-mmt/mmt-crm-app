@@ -1,21 +1,21 @@
 version: "3.4"
 services:
-  nginxProxy:
+  nginxproxy:
     build:
       context: .
-      target: nginxProxy
+      target: nginxproxy
     ports:
       - "9000:9000"
     restart: always
   nginx:
     depends_on:
-      - nginxProxy
+      - nginxproxy
     image: nginx:alpine
     restart: always
-  usersApp:
+  usersapp:
     build:
       context: .
-      target: usersApp
+      target: usersapp
     ports:
       - "5000:5000"
     environment:
@@ -24,30 +24,30 @@ services:
       - JWT_ALGO=${JWT_ALGO}
       - PORT=5000
     depends_on:
-      - nginxProxy
+      - nginxproxy
     container_name: 'users-service'
-  settingsApp:
+  settingsapp:
     build:
       context: .
-      target: settingsApp
+      target: settingsapp
     ports:
       - "5001:5001"
     depends_on:
-      - nginxProxy
+      - nginxproxy
     environment:
       - MONGO_URI=${MONGO_URI}
       - JWT_SECRET=${JWT_SECRET}
       - JWT_ALGO=${JWT_ALGO}
       - PORT=5001
     container_name: 'settings-service'
-  tasksApp:
+  tasksapp:
     build:
       context: .
-      target: tasksApp
+      target: tasksapp
     ports:
       - "5002:5002"
     depends_on:
-      - nginxProxy
+      - nginxproxy
     environment:
       - MONGO_URI=${MONGO_URI}
       - JWT_SECRET=${JWT_SECRET}

@@ -1,0 +1,45 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: Swagger user micro service
+  description: A sample API that demonstrates Swagger Express Middleware features
+
+consumes:
+  - application/json
+produces:
+  - application/json
+
+schemes:
+  - http
+  - https
+
+securityDefinitions:
+  JWT:
+    type: apiKey
+    name: Authorization
+    in: header
+
+definitions:
+  user:
+    required:
+      - name
+      - type
+    properties:
+      email:
+        type: string
+        required: true
+      name:
+        type: string
+        required: true
+      password:
+        type: string
+        required: true
+      companyName:
+        type: string
+        required: true
+      mobileNumber:
+        type: string
+        required: true
+        minLength: 10
+        maxLength: 10
+

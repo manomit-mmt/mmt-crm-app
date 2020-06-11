@@ -1,0 +1,6 @@
+users/node_modules
+users/.env
+settings/node_modules
+settings/.env
+tasks/node_modules
+tasks/.env

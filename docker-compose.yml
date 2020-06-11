@@ -1,0 +1,56 @@
+version: "3.0"
+services:
+  nginxProxy:
+    build:
+      context: .
+      target: nginxProxy
+    ports:
+      - "9000:9000"
+    restart: always
+  nginx:
+    depends_on:
+      - nginxProxy
+    image: nginx:alpine
+    restart: always
+  usersApp:
+    build:
+      context: .
+      target: usersApp
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URI=${MONGO_URI}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_ALGO=${JWT_ALGO}
+      - JWT_EXPIRE_IN=${JWT_EXPIRE_IN}
+    depends_on:
+      - nginxProxy
+    container_name: 'users-service'
+  settingsApp:
+    build:
+      context: .
+      target: settingsApp
+    ports:
+      - "5001:5001"
+    depends_on:
+      - nginxProxy
+    environment:
+      - MONGO_URI=${MONGO_URI}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_ALGO=${JWT_ALGO}
+      - JWT_EXPIRE_IN=${JWT_EXPIRE_IN}
+    container_name: 'settings-service'
+  tasksApp:
+    build:
+      context: .
+      target: tasksApp
+    ports:
+      - "5002:5002"
+    depends_on:
+      - nginxProxy
+    environment:
+      - MONGO_URI=${MONGO_URI}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_ALGO=${JWT_ALGO}
+      - JWT_EXPIRE_IN=${JWT_EXPIRE_IN}
+    container_name: 'tasks-service'

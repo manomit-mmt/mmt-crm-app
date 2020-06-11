@@ -56,6 +56,7 @@ else {
 
     .then(() => {
       // entryPoint();
+      
       return Promise.resolve(app);
     })
 

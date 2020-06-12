@@ -68,7 +68,7 @@ else {
       http.createServer(app).listen(5002, () => {
         console.log(
           'Http Server is running On:',
-          5002
+          5000
         );
 
       });

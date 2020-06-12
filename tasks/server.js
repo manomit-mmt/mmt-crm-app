@@ -63,10 +63,10 @@ else {
     .then(() => {
       app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
       
-      http.createServer(app).listen(process.env.PORT, () => {
+      http.createServer(app).listen(5001, () => {
         console.log(
           'Http Server is running On:',
-          process.env.PORT
+          5001
         );
 
       });

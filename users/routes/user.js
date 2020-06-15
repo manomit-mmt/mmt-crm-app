@@ -94,6 +94,10 @@ router.post('/login', (req, res) => {
 router.get('/current-user', requiredAuth, async (req, res) => {
   const userDetails = await User.find({_id: req.userInfo.data._id}).populate('companyId').populate('roleId');
   res.status(200).send({data: userDetails});
+});
+
+router.get('/test-load-balancer', (req, res) => {
+  res.send("Hello World");
 })
 
 module.exports = router;

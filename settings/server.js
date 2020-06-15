@@ -64,7 +64,7 @@ else {
       
       app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-      http.createServer(app).listen(5000, () => {
+      http.createServer(app).listen(5001, () => {
         console.log(
           'Http Server is running On:',
           5001

@@ -2,6 +2,7 @@
 
 const TaskValidators = require('../validations').TaskValidators;
 const TaskDB = require('../db/mongo/schemas').taskSchema;
+const TaskTypesDB = require('../db/mongo/schemas').taskTypeSchema;
 
 const { requiredAuth } = require('../middlewares/auth');
 const router = require('express').Router();
@@ -84,6 +85,15 @@ router.get('/task/:taskId', requiredAuth, async(req, res) => {
     } catch(err) {
       res.status(500).send({message: err.message});
     }
+});
+
+router.get('/task-types', requiredAuth, async(req, res) => {
+  try {
+    const data = await TaskTypesDB.find({});
+    res.status(200).send({data});
+  } catch(err) {
+    res.status(500).send({message: err.message});
+  }
 });
 
 module.exports = router;

@@ -4,3 +4,5 @@ settings/node_modules
 settings/.env
 tasks/node_modules
 tasks/.env
+emr/.env
+emr/node_modules

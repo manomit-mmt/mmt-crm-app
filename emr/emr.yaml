@@ -1,0 +1,178 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Swagger user micro service
+  description: A sample API that demonstrates Swagger Express Middleware features
+
+consumes:
+  - application/json
+produces:
+  - application/json
+
+schemes:
+  - http
+  - https
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+definitions:
+  user:
+    required:
+      - name
+      - type
+    properties:
+      email:
+        type: string
+        required: true
+      name:
+        type: string
+        required: true
+      password:
+        type: string
+        required: true
+      companyName:
+        type: string
+        required: true
+      mobileNumber:
+        type: string
+        required: true
+        minLength: 10
+        maxLength: 10
+
+paths:
+  /user/signup:
+    post:
+      description: Signup a new user and return jwt token for now
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  required: true
+                email:
+                  type: string
+                  required: true
+                password:
+                  type: string
+                  required: true
+                companyName:
+                  type: string
+                  required: true
+                mobileNumber:
+                  type: string
+                  required: true
+                  minLength: 10
+                  maxLength: 10
+      responses:
+        200:
+          description: Return of the registered user
+          schema:
+            properties:
+              token:
+                type: string
+        409:
+          description: Email or mobile number already registered
+          properties:
+            message:
+              type: string
+              description: Email or mobile number alreday exists
+  /user/login:
+    post:
+      description: Login with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  required: true
+                password:
+                  type: string
+                  required: true
+      responses:
+        200:
+          description: Return of the registered user
+          schema:
+            properties:
+              token:
+                type: string
+        409:
+          description: Email or mobile number already registered
+          properties:
+            message:
+              type: string
+              description: Email or password not found
+
+  /user/current-user:
+    get:
+      security:
+        - bearerAuth: []
+      description: Get current user information
+      responses:
+        '200':
+          description: A user object.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  mobileNumber:
+                    type: string
+                  verifyEmail:
+                    type: boolean
+                  deleted:
+                    type: integer
+                  companyId:
+                    _id:
+                      type: string
+                    name:
+                      type: string
+                    domain:
+                      type: string
+                  roleId:
+                    _id:
+                      type: string
+                    name:
+                      type: string
+                    code:
+                      type: string
+                    status:
+                      type: boolean
+        '401':
+          description: Unauthorized access.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Unauthorized access.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        default:
+          description: Unexpected error

@@ -27,10 +27,9 @@ const http = require('http');
 
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
-const swaggerDocument = YAML.load('./user.yaml');
+const swaggerDocument = YAML.load('./emr.yaml');
 
 // const entryPoint = require('./entry-point');
-const receiveFromPatient = require('./utility/receive-from-patient');
 
 if(cluster.isMaster) {
     const cpuCount = require('os').cpus().length;
@@ -57,8 +56,6 @@ else {
 
     .then(() => {
       // entryPoint();
-      
-      receiveFromPatient();
       return Promise.resolve(app);
     })
 
@@ -66,10 +63,10 @@ else {
     .then(() => {
       app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
       
-      http.createServer(app).listen(5000, () => {
+      http.createServer(app).listen(5003, () => {
         console.log(
           'Http Server is running On:',
-          5000
+          5003
         );
 
       });

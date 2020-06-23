@@ -62,6 +62,8 @@ router.get('/list', requiredAuth, async (req, res) => {
                     config[key] = value;
                 }
                 config['contactId'] = cData._id;
+                config['createdAt'] = cData.createdAt;
+                config['updatedAt'] = cData.updatedAt;
                 responsData.push(config);
             }
             
@@ -82,6 +84,8 @@ router.get('/:contactId', async (req, res) => {
                 config[key] = value;
             }
             config['contactId'] = contactData._id;
+            config['createdAt'] = contactData.createdAt;
+            config['updatedAt'] = contactData.updatedAt;
             responsData.push(config);
         }
         

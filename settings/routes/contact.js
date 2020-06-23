@@ -57,11 +57,14 @@ router.get('/list', requiredAuth, async (req, res) => {
         const responsData = [];
         for(const cData of contactData) {
             let config = {};
-            for(let [key,value] of Object.entries(cData.data)) {
-                config[key] = value;
+            if(cData.data !== undefined) {
+                for(let [key,value] of Object.entries(cData.data)) {
+                    config[key] = value;
+                }
+                config['contactId'] = cData._id;
+                responsData.push(config);
             }
-            config['contactId'] = cData._id;
-            responsData.push(config);
+            
         }
         res.status(200).send({data:responsData});
     } catch(err) {
@@ -74,11 +77,14 @@ router.get('/:contactId', async (req, res) => {
         const contactData = await ContactDB.findById(req.params.contactId);
         const responsData = [];
         let config = {};
-        for(let [key,value] of Object.entries(contactData.data)) {
-            config[key] = value;
+        if(contactData.data !== undefined) {
+            for(let [key,value] of Object.entries(contactData.data)) {
+                config[key] = value;
+            }
+            config['contactId'] = contactData._id;
+            responsData.push(config);
         }
-        config['contactId'] = contactData._id;
-        responsData.push(config);
+        
         res.status(200).send({data:responsData});
     } catch(err) {
         res.status(422).send({message: err.message});

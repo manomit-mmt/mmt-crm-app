@@ -10,6 +10,7 @@ const taskDataSet = {
     companyId: joi.string().required(),
     userId: joi.string().required(),
     taskTypeId: joi.string().required(),
+    contactId: joi.string().required(),
 };
 
 const taskValidation = async config => {

@@ -35,6 +35,10 @@ const taskSchema = new Schema(
       type: String,
       required: true
     },
+    contactId: {
+      type: String,
+      required: true
+    },
     status: {
       type: Boolean,
       default: true

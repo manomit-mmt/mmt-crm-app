@@ -16,7 +16,8 @@ router.post('/create', requiredAuth, async(req, res) => {
         dueTime: req.body.dueTime,
         taskTypeId: req.body.taskTypeId,
         companyId: req.userInfo.data.companyId,
-        userId: req.userInfo.data._id
+        userId: req.userInfo.data._id,
+        contactId: req.body.contactId,
       }
       await TaskValidators.taskValidation(config);
       const data = await TaskDB.create(config);
@@ -45,6 +46,7 @@ router.post('/edit', requiredAuth, async(req, res) => {
           dueDate: req.body.dueDate,
           dueTime: req.body.dueTime,
           taskTypeId: req.body.taskTypeId,
+          contactId: req.body.contactId,
         }
       });
       res.status(200).send({message: 'Task updated successfully'});
@@ -94,6 +96,15 @@ router.get('/task-types', requiredAuth, async(req, res) => {
   } catch(err) {
     res.status(500).send({message: err.message});
   }
+});
+
+router.get('/get-tasks-by-contact-id/:contactId', requiredAuth, async(req, res) => {
+    try {
+      const data = await TaskDB.find({contactId: req.params.contactId});
+      res.status(200).send({data});
+    } catch(err) {
+      res.status(500).send({message: err.message});
+    }
 });
 
 module.exports = router;

@@ -23,7 +23,7 @@ const masterFieldSchema = new Schema({
         type: String,
         default: ''
     },
-    placeholderText: {
+    description: {
         type: String,
         default: '',
     },

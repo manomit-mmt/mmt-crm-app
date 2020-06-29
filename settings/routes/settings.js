@@ -28,7 +28,12 @@ router.get('/group/parent', requiredAuth, async (req, res) => {
 });
 
 router.get('/group/list', requiredAuth, async (req, res) => {
-    const result = await MasterGroup.find({moduleName: req.params.moduleName});
+    const result = await MasterGroup.find({moduleName: req.body.moduleName});
+    res.status(200).send({data: result});
+});
+
+router.get('/group/get-group-by-id/:groupId', requiredAuth, async (req, res) => {
+    const result = await MasterGroup.find({_id: req.params.groupId});
     res.status(200).send({data: result});
 });
 

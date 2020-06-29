@@ -23,12 +23,12 @@ router.post('/module/create', async (req, res) => {
 });
 
 router.get('/group/parent', requiredAuth, async (req, res) => {
-    const parentGroups = await MasterGroup.find({parentId: {$ne: null}, moduleId: req.query['moduleId'], inModuleId: req.query['moduleId']});
+    const parentGroups = await MasterGroup.find({parentId: {$ne: null}, moduleName: req.params.moduleName});
     res.status(200).send({data: parentGroups});
 });
 
 router.get('/group/list', requiredAuth, async (req, res) => {
-    const result = await MasterGroup.find({moduleId: req.query['moduleId'], inModuleId: req.query['moduleId']});
+    const result = await MasterGroup.find({moduleName: req.params.moduleName});
     res.status(200).send({data: result});
 });
 
@@ -38,7 +38,7 @@ router.get('/group/search', requiredAuth, async (req, res) => {
     res.status(200).send({data:result});
 });
 
-router.put('/group/create', requiredAuth, async (req, res) => {
+router.post('/group/create', requiredAuth, async (req, res) => {
     try {
         const { name, parentId, isFound } = req.body;
         let relationalName = '';
@@ -48,40 +48,16 @@ router.put('/group/create', requiredAuth, async (req, res) => {
             const parentGroupDetails = await MasterGroup.find({parentId});
             relationalName = `${parentGroupDetails[0].name}-${name}`;
         }
-        
-        if(isFound) {
-            const groupNameExists = await MasterGroup.find({name});
-            if (groupNameExists.length > 0) {
-                const { inModuleId, moduleId } = groupNameExists[0];
-                inModuleId.push(req.body.moduleId);
-                moduleId.push(req.body.moduleId);
-    
-                const newInModuleIds = new Set(moduleId);
-                const newModuleIds = new Set(moduleId);
 
-                await MasterGroup.updateOne({
-                    _id: groupNameExists[0]._id,
-
-                }, {
-                    $set: {
-                        parentId,
-                        moduleId: newModuleIds,
-                        inModuleId: newInModuleIds
-                    }
-                });
-                res.status(200).send({message: 'Updated successfully', data: null});
-            }
-        } else {
-            const groupData = await MasterGroup.create({
-                name,
-                relationalName,
-                parentId,
-                inModuleId: [req.body.moduleId],
-                moduleId: [req.body.moduleId],
-                createdBy: req.userInfo.data._id
-            });
-            res.status(200).send({message: 'Added successfully', data: groupData});
-        }
+        const groupData = await MasterGroup.create({
+            name,
+            relationalName,
+            parentId,
+            moduleName: req.body.moduleName,
+            createdBy: req.userInfo.data._id,
+            companyId: req.userInfo.data.companyId
+        });
+        res.status(200).send({message: 'Added successfully', data: groupData});
         
 
     } catch(err) {
@@ -89,7 +65,7 @@ router.put('/group/create', requiredAuth, async (req, res) => {
     }
 });
 
-router.post('/group/edit', async (req, res) => {
+router.post('/group/edit', requiredAuth, async (req, res) => {
     try {
 
         await MasterGroup.updateOne({

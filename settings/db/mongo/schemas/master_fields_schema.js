@@ -39,8 +39,10 @@ const masterFieldSchema = new Schema({
         type: Boolean,
         default: false,
     },
-    moduleId: [{ type: Schema.Types.ObjectId, ref: 'ModuleMaster'}],
-    inModuleId: [{ type: Schema.Types.ObjectId, ref: 'ModuleMaster'}],
+    moduleName: {
+        type: String,
+        default: ''
+    },
     status: {
         type: Boolean,
         default: true,
@@ -48,6 +50,9 @@ const masterFieldSchema = new Schema({
     createdBy: {
         type: String,
         default: null,
+    },
+    companyId: {
+        type: String
     },
 
 }, {

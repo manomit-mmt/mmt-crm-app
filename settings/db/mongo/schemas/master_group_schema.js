@@ -16,6 +16,10 @@ const masterGroupSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'MasterGroup',
     },
+    moduleName: {
+        type: String,
+        default: ''
+    },
     status: {
         type: Boolean,
         default: true,
@@ -24,8 +28,9 @@ const masterGroupSchema = new Schema({
         type: String,
         default: null,
     },
-    moduleId: [{ type: Schema.Types.ObjectId, ref: 'ModuleMaster'}],
-    inModuleId: [{ type: Schema.Types.ObjectId, ref: 'ModuleMaster'}]
+    companyId: {
+        type: String
+    }
 }, {
     versionKey: false,
     timestamps: true

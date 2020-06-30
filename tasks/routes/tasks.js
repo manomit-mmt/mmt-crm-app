@@ -107,4 +107,19 @@ router.get('/get-tasks-by-contact-id/:contactId', requiredAuth, async(req, res) 
     }
 });
 
+router.post('/task-types/update', requiredAuth, async (req, res) => {
+  try {
+    await TaskTypesDB.updateOne({
+      _id: req.body.taskTypeId
+    }, {
+      $set: {
+        name: req.body.taskTypeName
+      }
+    });
+    res.status(200).send({message: 'Task type updated successfully'});
+  } catch(err) {
+    res.status(500).send({message: err.message});
+  }
+});
+
 module.exports = router;

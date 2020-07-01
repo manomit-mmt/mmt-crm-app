@@ -65,7 +65,7 @@ router.post('/edit', requiredAuth, async(req, res) => {
 });
 
 router.get('/list', requiredAuth, async(req, res) => {
-    const data = await MasterField.find({moduleName: req.body.moduleName});
+    const data = await MasterField.find({moduleName: req.query['moduleName'], companyId: req.userInfo.data.companyId});
     res.status(200).send({message: 'Listed successfully', data});
 });
 

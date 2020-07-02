@@ -2,7 +2,7 @@
 
 const { requiredAuth } = require('../middlewares/auth');
 const PropertyValidator = require('../validations').PropertyValidator;
-const MasterField = require('../db/mongo/schemas').masterFieldSchema;
+const PropertySetting = require('../db/mongo/schemas').propertySettingsSchema;
 
 const router = require('express').Router();
 
@@ -17,7 +17,7 @@ router.post('/create', requiredAuth, async (req, res) => {
         
         const internalName = req.body.fieldLabel.toString().toLowerCase().split(" ").join("_");
 
-        const propertyExists = await MasterField.find({internalName, createdBy: req.userInfo.data._id, moduleName: req.body.moduleName});
+        const propertyExists = await PropertySetting.find({internalName, createdBy: req.userInfo.data._id, objectType: req.body.objectType});
         if(propertyExists.length > 0) {
             res.status(500).send({message: 'Property label already exists'});
         } else {
@@ -26,13 +26,13 @@ router.post('/create', requiredAuth, async (req, res) => {
                 fieldType: req.body.fieldType,
                 groupId: req.body.groupId,
                 internalName,
-                moduleName: req.body.moduleName,
+                objectType: req.body.objectType,
                 createdBy: req.userInfo.data._id,
                 companyId: req.userInfo.data.companyId,
                 description: req.body.description ? req.body.description : ''
             };
 
-            const data = await MasterField.create(config);
+            const data = await PropertySetting.create(config);
             res.status(200).send({message: 'Property added successfully', data: data});
         }
 
@@ -44,7 +44,7 @@ router.post('/create', requiredAuth, async (req, res) => {
 router.post('/edit', requiredAuth, async(req, res) => {
     try {
         const internalName = req.body.fieldLabel.toString().toLowerCase().split(" ").join("_");
-        await MasterField.updateOne({
+        await PropertySetting.updateOne({
             _id: req.body.propertyId
         }, {
             $set: {
@@ -52,7 +52,7 @@ router.post('/edit', requiredAuth, async(req, res) => {
                 fieldType: req.body.fieldType,
                 groupId: req.body.groupId,
                 internalName,
-                moduleName: req.body.moduleName,
+                objectType: req.body.objectType,
                 createdBy: req.userInfo.data._id,
                 companyId: req.userInfo.data.companyId,
                 description: req.body.description ? req.body.description : ''
@@ -65,12 +65,12 @@ router.post('/edit', requiredAuth, async(req, res) => {
 });
 
 router.get('/list', requiredAuth, async(req, res) => {
-    const data = await MasterField.find({moduleName: req.query['moduleName'], companyId: req.userInfo.data.companyId});
+    const data = await PropertySetting.find({objectType: req.query['objectType'], companyId: req.userInfo.data.companyId}).populate('fieldType').populate('groupId').populate('objectType');
     res.status(200).send({message: 'Listed successfully', data});
 });
 
 router.get('/get-property-by-id/:propertyId', requiredAuth, async(req, res) => {
-    const data = await MasterField.find({_id: req.params.propertyId});
+    const data = await PropertySetting.find({_id: req.params.propertyId}).populate('fieldType').populate('groupId').populate('objectType');
     res.status(200).send({message: 'Listed successfully', data});
 });
 

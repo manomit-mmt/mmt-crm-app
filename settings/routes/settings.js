@@ -1,26 +1,11 @@
 'use strict';
 
-const ModuleMaster = require('../db/mongo/schemas').moduleSchema,
-      MasterGroup = require('../db/mongo/schemas').masterGroupSchema,  
-      ModuleMasterValidator = require('../validations').ModuleMasterValidator;  
+const MasterGroup = require('../db/mongo/schemas').masterGroupSchema;
+const ObjectType = require('../db/mongo/schemas').objectTypeSchema;
+const FieldType = require('../db/mongo/schemas').fieldTypeSchema; 
 const { requiredAuth } = require('../middlewares/auth');
 const router = require('express').Router();
 
-router.post('/module/create', async (req, res) => {
-   try {
-        await ModuleMasterValidator.moduleMasterValidation(req.body);
-        const { name, moduleType } = req.body;
-        const moduleData = await ModuleMaster.create({
-            name,
-            slug: name.split(" ").join("-").toLowerCase(),
-            moduleType
-        });
-        res.status(200).send({data:moduleData});
-        
-   } catch(err) {
-        res.status(422).send({message: err.message});
-   } 
-});
 
 router.get('/group/parent', requiredAuth, async (req, res) => {
     const parentGroups = await MasterGroup.find({parentId: {$ne: null}, moduleName: req.params.moduleName});
@@ -87,6 +72,19 @@ router.post('/group/edit', requiredAuth, async (req, res) => {
         res.status(500).send({message: err.message});
     }
 });
+
+router.get('/object-type/list', requiredAuth, async (req, res) => {
+    const objectTypeList = await ObjectType.find({status: true});
+    res.status(200).send({data: objectTypeList});
+});
+router.get('/field-type/list', requiredAuth, async (req, res) => {
+    const fieldTypeList = await FieldType.find({status: true});
+    res.status(200).send({data: fieldTypeList});
+});
+router.get('/get-field-type-by-id/:fieldTypeId', requiredAuth, async( req, res) => {
+    const fieldTypeList = await FieldType.find({status: true, _id: req.params.fieldTypeId});
+    res.status(200).send({data: fieldTypeList});
+})
 
 
 module.exports = router;

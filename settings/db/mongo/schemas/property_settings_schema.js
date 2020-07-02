@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const masterFieldSchema = new Schema({
+const propertySettingsSchema = new Schema({
     fieldLabel: {
         type: String,
         required: true,
@@ -15,8 +15,8 @@ const masterFieldSchema = new Schema({
         unique: true,
     },
     fieldType: {
-        type: String,
-        required: true,
+        type: Schema.Types.ObjectId,
+        ref: 'FieldType',
     },
     choices: [{ type: String }],
     tooltip: {
@@ -39,9 +39,9 @@ const masterFieldSchema = new Schema({
         type: Boolean,
         default: false,
     },
-    moduleName: {
-        type: String,
-        default: ''
+    objectType: {
+        type: Schema.Types.ObjectId,
+        ref: 'ObjectType',
     },
     status: {
         type: Boolean,
@@ -60,4 +60,4 @@ const masterFieldSchema = new Schema({
     timestamps: true
 });
 
-module.exports = mongoose.model('MasterField', masterFieldSchema);
+module.exports = mongoose.model('PropertySetting', propertySettingsSchema);

@@ -4,6 +4,8 @@ const { requiredAuth } = require('../middlewares/auth');
 const PropertyValidator = require('../validations').PropertyValidator;
 const PropertySetting = require('../db/mongo/schemas').propertySettingsSchema;
 
+const { publishToQueue, receiveFromQueue } = require('../utility/mqService');
+
 const router = require('express').Router();
 
 router.post('/create', requiredAuth, async (req, res) => {
@@ -64,14 +66,36 @@ router.post('/edit', requiredAuth, async(req, res) => {
     }
 });
 
+router.post('/delete', requiredAuth, async (req, res) => {
+    try {
+        await PropertySetting.updateOne({
+            _id: req.body.propertyId
+        }, {
+            $set: {
+                status: false
+            }
+        });
+        res.status(200).send({message: 'Deleted successfully', data: null});
+    } catch(err) {
+        res.status(500).send({message: err.message});
+    }
+})
+
 router.get('/list', requiredAuth, async(req, res) => {
-    const data = await PropertySetting.find({objectType: req.query['objectType'], companyId: req.userInfo.data.companyId}).populate('fieldType').populate('groupId').populate('objectType');
-    res.status(200).send({message: 'Listed successfully', data});
+    const data = await PropertySetting.find({objectType: req.query['objectType'], companyId: req.userInfo.data.companyId, status: true}).populate('fieldType').populate('groupId').populate('objectType');
+    await publishToQueue('settings-to-user',{userId: req.userInfo.data._id});
+    receiveFromQueue(responseData => {
+        res.status(200).send({message: 'Listed successfully', data, user: responseData.user});
+    })
+    
 });
 
 router.get('/get-property-by-id/:propertyId', requiredAuth, async(req, res) => {
-    const data = await PropertySetting.find({_id: req.params.propertyId}).populate('fieldType').populate('groupId').populate('objectType');
-    res.status(200).send({message: 'Listed successfully', data});
+    const data = await PropertySetting.find({_id: req.params.propertyId, status: true}).populate('fieldType').populate('groupId').populate('objectType');
+    await publishToQueue('settings-to-user',{userId: req.userInfo.data._id});
+    receiveFromQueue(responseData => {
+        res.status(200).send({message: 'Listed successfully', data, user: responseData.user});
+    })
 });
 
 module.exports = router;

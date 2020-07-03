@@ -13,20 +13,15 @@ router.get('/group/parent', requiredAuth, async (req, res) => {
 });
 
 router.get('/group/list/', requiredAuth, async (req, res) => {
-    const result = await MasterGroup.find({moduleName: req.query['moduleName'], companyId: req.userInfo.data.companyId});
+    const result = await MasterGroup.find({moduleName: req.query['moduleName'], companyId: req.userInfo.data.companyId, status: true});
     res.status(200).send({data: result});
 });
 
 router.get('/group/get-group-by-id/:groupId', requiredAuth, async (req, res) => {
-    const result = await MasterGroup.find({_id: req.params.groupId});
+    const result = await MasterGroup.find({_id: req.params.groupId, status: true});
     res.status(200).send({data: result});
 });
 
-router.get('/group/search', requiredAuth, async (req, res) => {
-    const regex = new RegExp(req.query["term"], 'i');
-    const result = await MasterGroup.find({name: regex, moduleId: req.query['moduleId'], inModuleId: { $nin: [req.query['moduleId']] }}).limit(20);
-    res.status(200).send({data:result});
-});
 
 router.post('/group/create', requiredAuth, async (req, res) => {
     try {
@@ -68,6 +63,21 @@ router.post('/group/edit', requiredAuth, async (req, res) => {
         });
         res.status(200).send({message: 'Updated successfully', data: null});
 
+    } catch(err) {
+        res.status(500).send({message: err.message});
+    }
+});
+
+router.post('/group/delete', requiredAuth, async (req, res) => {
+    try {
+        await MasterGroup.updateOne({
+            _id: req.body.groupId
+        }, {
+            $set: {
+                status: false
+            }
+        });
+        res.status(200).send({message: 'Deleted successfully', data: null});
     } catch(err) {
         res.status(500).send({message: err.message});
     }

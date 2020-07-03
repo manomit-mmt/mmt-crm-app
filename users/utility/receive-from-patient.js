@@ -61,7 +61,7 @@ const getPatientDetails = () => {
                 const user = await User.find({_id: userData.userId}).populate('companyId').populate('roleId');
                 responseData.user = user;
                 ch.sendToQueue('user-to-settings', Buffer.from(JSON.stringify(responseData)));
-            })
+            }, {noAck:true})
         })
     })
 };

@@ -82,20 +82,32 @@ router.post('/delete', requiredAuth, async (req, res) => {
 })
 
 router.get('/list', requiredAuth, async(req, res) => {
-    const data = await PropertySetting.find({objectType: req.query['objectType'], companyId: req.userInfo.data.companyId, status: true}).populate('fieldType').populate('groupId').populate('objectType');
-    await publishToQueue('settings-to-user',{userId: req.userInfo.data._id});
-    receiveFromQueue(responseData => {
-        res.status(200).send({message: 'Listed successfully', data, user: responseData.user});
-    })
+    const data = await PropertySetting
+    .find({companyId: req.userInfo.data.companyId, status: true})
+    .populate('fieldType')
+    .populate('groupId')
+    .populate('objectType')
+    .populate('createdBy');
+    res.status(200).send({message: 'Listed successfully', data, user: responseData.user});
+    // await publishToQueue('settings-to-user',{userId: req.userInfo.data._id});
+    // receiveFromQueue(responseData => {
+    //     res.status(200).send({message: 'Listed successfully', data, user: responseData.user});
+    // })
     
 });
 
 router.get('/get-property-by-id/:propertyId', requiredAuth, async(req, res) => {
-    const data = await PropertySetting.find({_id: req.params.propertyId, status: true}).populate('fieldType').populate('groupId').populate('objectType');
-    await publishToQueue('settings-to-user',{userId: req.userInfo.data._id});
-    receiveFromQueue(responseData => {
-        res.status(200).send({message: 'Listed successfully', data, user: responseData.user});
-    })
+    const data = await PropertySetting
+    .find({_id: req.params.propertyId, status: true})
+    .populate('fieldType')
+    .populate('groupId')
+    .populate('objectType')
+    .populate('createdBy');
+    res.status(200).send({message: 'Listed successfully', data, user: responseData.user});
+    // await publishToQueue('settings-to-user',{userId: req.userInfo.data._id});
+    // receiveFromQueue(responseData => {
+    //     res.status(200).send({message: 'Listed successfully', data, user: responseData.user});
+    // })
 });
 
 module.exports = router;

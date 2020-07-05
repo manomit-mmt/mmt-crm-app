@@ -48,11 +48,12 @@ const propertySettingsSchema = new Schema({
         default: true,
     },
     createdBy: {
-        type: String,
-        default: null,
+        type: Schema.Types.ObjectId,
+        ref: 'User',
     },
     companyId: {
-        type: String
+        type: Schema.Types.ObjectId,
+        ref: 'Company',
     },
 
 }, {

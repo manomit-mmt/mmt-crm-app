@@ -35,7 +35,11 @@ router.post('/create', requiredAuth, async (req, res) => {
             };
 
             const data = await PropertySetting.create(config);
-            res.status(200).send({message: 'Property added successfully', data: data});
+            const responseData = await PropertySetting.find({_id: data._id}).populate('fieldType')
+            .populate('groupId')
+            .populate('objectType')
+            .populate('createdBy');
+            res.status(200).send({message: 'Property added successfully', data: responseData});
         }
 
     } catch(err) {
@@ -60,7 +64,11 @@ router.post('/edit', requiredAuth, async(req, res) => {
                 description: req.body.description ? req.body.description : ''
             }
         });
-        res.status(200).send({message: 'Updated successfully', data: null});
+        const responseData = await PropertySetting.find({_id: req.body.propertyId}).populate('fieldType')
+            .populate('groupId')
+            .populate('objectType')
+            .populate('createdBy');
+        res.status(200).send({message: 'Updated successfully', data: responseData});
     } catch(err) {
         res.status(500).send({message: err.message});
     }

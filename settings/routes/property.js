@@ -118,4 +118,14 @@ router.get('/get-property-by-id/:propertyId', requiredAuth, async(req, res) => {
     // })
 });
 
+router.post('/check-property-exists', requiredAuth, async (req, res) => {
+    const internalName = req.body.fieldLabel.toString().toLowerCase().split(" ").join("_");
+    const propertyExists = await PropertySetting.find({internalName, companyId: req.userInfo.data.companyId});
+    if(propertyExists.length > 0) {
+        res.status(500).send({message: 'Property label already exists'});
+    } else {
+        res.status(200).send({message: 'Property label not exists'});
+    }
+})
+
 module.exports = router;

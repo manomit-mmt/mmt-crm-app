@@ -88,7 +88,7 @@ router.get('/list', requiredAuth, async(req, res) => {
     .populate('groupId')
     .populate('objectType')
     .populate('createdBy');
-    res.status(200).send({message: 'Listed successfully', data, user: responseData.user});
+    res.status(200).send({message: 'Listed successfully', data});
     // await publishToQueue('settings-to-user',{userId: req.userInfo.data._id});
     // receiveFromQueue(responseData => {
     //     res.status(200).send({message: 'Listed successfully', data, user: responseData.user});
@@ -103,7 +103,7 @@ router.get('/get-property-by-id/:propertyId', requiredAuth, async(req, res) => {
     .populate('groupId')
     .populate('objectType')
     .populate('createdBy');
-    res.status(200).send({message: 'Listed successfully', data, user: responseData.user});
+    res.status(200).send({message: 'Listed successfully', data});
     // await publishToQueue('settings-to-user',{userId: req.userInfo.data._id});
     // receiveFromQueue(responseData => {
     //     res.status(200).send({message: 'Listed successfully', data, user: responseData.user});

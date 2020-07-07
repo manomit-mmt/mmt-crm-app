@@ -13,7 +13,13 @@ router.get('/group/parent', requiredAuth, async (req, res) => {
 });
 
 router.get('/group/list/', requiredAuth, async (req, res) => {
-    const result = await MasterGroup.find({moduleName: req.query['moduleName'], companyId: req.userInfo.data.companyId, status: true});
+    const query = {};
+    query.companyId = req.userInfo.data.companyId;
+    query.status = true;
+    if(req.query['objectType']) {
+        query.moduleName = req.query['objectType'];
+    }
+    const result = await MasterGroup.find(query);
     res.status(200).send({data: result});
 });
 
@@ -38,7 +44,7 @@ router.post('/group/create', requiredAuth, async (req, res) => {
             name,
             relationalName,
             parentId,
-            moduleName: req.body.moduleName,
+            moduleName: req.body.objectType,
             createdBy: req.userInfo.data._id,
             companyId: req.userInfo.data.companyId
         });

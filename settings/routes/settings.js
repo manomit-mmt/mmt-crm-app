@@ -61,7 +61,8 @@ router.post('/group/edit', requiredAuth, async (req, res) => {
                 parentId: req.body.parentId === null || req.body.parentId === undefined || req.body.parentId === '' ? null: req.body.parentId
             }
         });
-        res.status(200).send({message: 'Updated successfully', data: null});
+        const data = await MasterGroup.find({_id: req.body.groupId});
+        res.status(200).send({message: 'Updated successfully', data});
 
     } catch(err) {
         res.status(500).send({message: err.message});

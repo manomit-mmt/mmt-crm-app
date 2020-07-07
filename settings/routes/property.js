@@ -31,7 +31,8 @@ router.post('/create', requiredAuth, async (req, res) => {
                 objectType: req.body.objectType,
                 createdBy: req.userInfo.data._id,
                 companyId: req.userInfo.data.companyId,
-                description: req.body.description ? req.body.description : ''
+                description: req.body.description ? req.body.description : '',
+                choices: req.body.choices
             };
 
             const data = await PropertySetting.create(config);
@@ -61,7 +62,8 @@ router.post('/edit', requiredAuth, async(req, res) => {
                 objectType: req.body.objectType,
                 createdBy: req.userInfo.data._id,
                 companyId: req.userInfo.data.companyId,
-                description: req.body.description ? req.body.description : ''
+                description: req.body.description ? req.body.description : '',
+                choices: req.body.choices
             }
         });
         const responseData = await PropertySetting.find({_id: req.body.propertyId}).populate('fieldType')

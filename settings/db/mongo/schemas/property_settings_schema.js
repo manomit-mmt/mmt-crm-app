@@ -16,7 +16,7 @@ const propertySettingsSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'FieldType',
     },
-    choices: [{ type: String }],
+    choices: [{ type: Schema.Types.Mixed }],
     tooltip: {
         type: String,
         default: ''

@@ -19,7 +19,7 @@ router.post('/create', requiredAuth, async (req, res) => {
         
         const internalName = req.body.fieldLabel.toString().toLowerCase().split(" ").join("_");
 
-        const propertyExists = await PropertySetting.find({internalName, createdBy: req.userInfo.data._id, objectType: req.body.objectType});
+        const propertyExists = await PropertySetting.find({internalName, createdBy: req.userInfo.data._id, objectType: req.body.objectType, status: true});
         if(propertyExists.length > 0) {
             res.status(500).send({message: 'Property label already exists'});
         } else {

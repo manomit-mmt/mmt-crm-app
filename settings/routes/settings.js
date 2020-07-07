@@ -39,16 +39,21 @@ router.post('/group/create', requiredAuth, async (req, res) => {
             const parentGroupDetails = await MasterGroup.find({parentId});
             relationalName = `${parentGroupDetails[0].name}-${name}`;
         }
-
-        const groupData = await MasterGroup.create({
-            name,
-            relationalName,
-            parentId,
-            moduleName: req.body.objectType,
-            createdBy: req.userInfo.data._id,
-            companyId: req.userInfo.data.companyId
-        });
-        res.status(200).send({message: 'Added successfully', data: groupData});
+        const groupExists = await MasterGroup.find({name, companyId: req.userInfo.data.companyId, status: true});
+        if(groupExists.length > 0) {
+            res.status(500).send({message: 'Group already exists'});
+        } else {
+            const groupData = await MasterGroup.create({
+                name,
+                relationalName,
+                parentId,
+                moduleName: req.body.objectType,
+                createdBy: req.userInfo.data._id,
+                companyId: req.userInfo.data.companyId
+            });
+            res.status(200).send({message: 'Added successfully', data: groupData});
+            
+        }
         
 
     } catch(err) {

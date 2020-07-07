@@ -7,12 +7,10 @@ const propertySettingsSchema = new Schema({
     fieldLabel: {
         type: String,
         required: true,
-        unique: true
     },
     internalName: {
         type: String,
         required: true,
-        unique: true,
     },
     fieldType: {
         type: Schema.Types.ObjectId,

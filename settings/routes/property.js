@@ -90,8 +90,14 @@ router.post('/delete', requiredAuth, async (req, res) => {
 })
 
 router.get('/list', requiredAuth, async(req, res) => {
+    const query = {};
+    query.companyId = req.userInfo.data.companyId;
+    query.status = true;
+    if(req.query['objectType']) {
+        query.objectType = req.query['objectType'];
+    }
     const data = await PropertySetting
-    .find({companyId: req.userInfo.data.companyId, status: true})
+    .find(query)
     .populate('fieldType')
     .populate('groupId')
     .populate('objectType')

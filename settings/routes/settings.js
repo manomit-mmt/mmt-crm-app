@@ -2,7 +2,8 @@
 
 const MasterGroup = require('../db/mongo/schemas').masterGroupSchema;
 const ObjectType = require('../db/mongo/schemas').objectTypeSchema;
-const FieldType = require('../db/mongo/schemas').fieldTypeSchema; 
+const FieldType = require('../db/mongo/schemas').fieldTypeSchema;
+const PropertySettingsSchema = require('../db/mongo/schemas').propertySettingsSchema; 
 const { requiredAuth } = require('../middlewares/auth');
 const router = require('express').Router();
 
@@ -20,12 +21,29 @@ router.get('/group/list/', requiredAuth, async (req, res) => {
         query.moduleName = req.query['objectType'];
     }
     const result = await MasterGroup.find(query);
+    const data = [];
+    for(const val of result) {
+        const propertyCount = await PropertySettingsSchema.find({ groupId: val._id }).count()
+        data.push({
+            _id: val._id,
+            name: val.name,
+            relationalName: val.relationalName,
+            parentId: val.parentId,
+            moduleName: val.moduleName,
+            status: val.status,
+            createdBy: val.createdBy,
+            companyId: val.companyId,
+            createdAt: val.createdAt,
+            noOfProperty: propertyCount
+        });
+    }
     res.status(200).send({data: result});
 });
 
 router.get('/group/get-group-by-id/:groupId', requiredAuth, async (req, res) => {
     const result = await MasterGroup.find({_id: req.params.groupId, status: true});
-    res.status(200).send({data: result});
+    const propertyCount = await PropertySettingsSchema.find({ groupId: result[0]._id }).count() 
+    res.status(200).send({data: result, noOfProperty: propertyCount});
 });
 
 

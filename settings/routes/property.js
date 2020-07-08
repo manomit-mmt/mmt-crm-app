@@ -6,6 +6,8 @@ const PropertySetting = require('../db/mongo/schemas').propertySettingsSchema;
 
 const { publishToQueue, receiveFromQueue } = require('../utility/mqService');
 
+const util = require('util');
+
 const router = require('express').Router();
 
 router.post('/create', requiredAuth, async (req, res) => {
@@ -100,6 +102,11 @@ router.get('/list', requiredAuth, async(req, res) => {
     query.status = true;
     if(req.query['objectType']) {
         query.objectType = req.query['objectType'];
+    }
+    if(req.query['include']) {
+        query._id = {
+            $in: [req.query['include']]
+        }
     }
     const data = await PropertySetting
     .find(query)

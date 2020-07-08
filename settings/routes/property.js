@@ -50,20 +50,23 @@ router.post('/create', requiredAuth, async (req, res) => {
 
 router.post('/edit', requiredAuth, async(req, res) => {
     try {
-        const internalName = req.body.fieldLabel.toString().toLowerCase().split(" ").join("_");
+        const propertyDetails = await PropertySetting.findById(req.body.propertyId);
+
+        
+        const internalName = req.body.fieldLabel !== "" && req.body.fieldLabel !== undefined && req.body.fieldLabel !== null && req.body.fieldLabel !== 'undefined' && req.body.fieldLabel !== 'null' ? req.body.fieldLabel.toString().toLowerCase().split(" ").join("_"): propertyDetails.internalName;
         await PropertySetting.updateOne({
             _id: req.body.propertyId
         }, {
             $set: {
-                fieldLabel: req.body.fieldLabel,
-                fieldType: req.body.fieldType,
-                groupId: req.body.groupId,
+                fieldLabel: req.body.fieldLabel !== "" && req.body.fieldLabel !== undefined && req.body.fieldLabel !== null && req.body.fieldLabel !== 'undefined' && req.body.fieldLabel !== 'null' ? req.body.fieldLabel : propertyDetails.fieldLabel,
+                fieldType: req.body.fieldType !== "" && req.body.fieldType !== undefined && req.body.fieldType !== null && req.body.fieldType !== 'undefined' && req.body.fieldType !== 'null' ? req.body.fieldType : propertyDetails.fieldType,
+                groupId: req.body.groupId !== "" && req.body.groupId !== undefined && req.body.groupId !== null && req.body.groupId !== 'undefined' && req.body.groupId !== 'null' ? req.body.groupId : propertyDetails.groupId,
                 internalName,
-                objectType: req.body.objectType,
+                objectType: req.body.objectType !== "" && req.body.objectType !== undefined && req.body.objectType !== null && req.body.objectType !== 'undefined' && req.body.objectType !== 'null' ? req.body.objectType : propertyDetails.objectType,
                 createdBy: req.userInfo.data._id,
                 companyId: req.userInfo.data.companyId,
-                description: req.body.description ? req.body.description : '',
-                choices: req.body.choices
+                description: req.body.description ? req.body.description : propertyDetails.description,
+                choices: req.body.choices ? req.body.choices : (propertyDetails.choices ? propertyDetails.choices : [])
             }
         });
         const responseData = await PropertySetting.find({_id: req.body.propertyId}).populate('fieldType')

@@ -23,7 +23,7 @@ router.get('/group/list/', requiredAuth, async (req, res) => {
     const result = await MasterGroup.find(query);
     const data = [];
     for(const val of result) {
-        const propertyCount = await PropertySettingsSchema.find({ groupId: val._id }).count()
+        const propertyCount = await PropertySettingsSchema.find({ groupId: val._id });
         data.push({
             _id: val._id,
             name: val.name,
@@ -34,16 +34,16 @@ router.get('/group/list/', requiredAuth, async (req, res) => {
             createdBy: val.createdBy,
             companyId: val.companyId,
             createdAt: val.createdAt,
-            noOfProperty: propertyCount
+            noOfProperty: propertyCount.length
         });
     }
-    res.status(200).send({data: result});
+    res.status(200).send({data});
 });
 
 router.get('/group/get-group-by-id/:groupId', requiredAuth, async (req, res) => {
     const result = await MasterGroup.find({_id: req.params.groupId, status: true});
-    const propertyCount = await PropertySettingsSchema.find({ groupId: result[0]._id }).count() 
-    res.status(200).send({data: result, noOfProperty: propertyCount});
+    const propertyCount = await PropertySettingsSchema.find({ groupId: result[0]._id }) 
+    res.status(200).send({data: result, noOfProperty: propertyCount.length});
 });
 
 

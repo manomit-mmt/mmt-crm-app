@@ -108,6 +108,17 @@ router.get('/list', requiredAuth, async(req, res) => {
             $in: [req.query['include']]
         }
     }
+    if(req.query['createdBy']) {
+        query.createdBy = {
+            $in: [req.query['createdBy']]
+        }
+    }
+    if(req.query['groupId']) {
+        query.groupId = req.query['groupId']
+    }
+    if(req.query['fieldType']) {
+        query.fieldType = req.query['fieldType']
+    }
     const data = await PropertySetting
     .find(query)
     .populate('fieldType')

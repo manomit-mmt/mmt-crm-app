@@ -9,4 +9,5 @@ module.exports = {
   companySchema: require('./company_schema'),
   roleSchema: require('./role_schema'),
   userSchema: require('./user_schema'),
+  formPropertySchema: require('./property_settings_schema'),
 };

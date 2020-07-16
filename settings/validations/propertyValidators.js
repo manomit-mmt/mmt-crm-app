@@ -4,7 +4,7 @@ const joi = require('joi');
 
 const createPropertyDataset = {
     fieldLabel: joi.string().required(),
-    fieldType: joi.string().required(),
+    fieldType: joi.object().required(),
     groupId: joi.string().required(),
     
 };

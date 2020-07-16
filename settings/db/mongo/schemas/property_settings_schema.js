@@ -12,9 +12,12 @@ const propertySettingsSchema = new Schema({
         type: String,
         required: true,
     },
+    // fieldType: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'FieldType',
+    // },
     fieldType: {
-        type: Schema.Types.ObjectId,
-        ref: 'FieldType',
+        type: Schema.Types.Mixed
     },
     choices: [{ type: Schema.Types.Mixed }],
     tooltip: {

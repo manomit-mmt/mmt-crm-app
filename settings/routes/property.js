@@ -38,7 +38,7 @@ router.post('/create', requiredAuth, async (req, res) => {
             };
 
             const data = await PropertySetting.create(config);
-            const responseData = await PropertySetting.find({_id: data._id}).populate('fieldType')
+            const responseData = await PropertySetting.find({_id: data._id})
             .populate('groupId')
             .populate('objectType')
             .populate('createdBy');
@@ -71,7 +71,7 @@ router.post('/edit', requiredAuth, async(req, res) => {
                 choices: req.body.choices ? req.body.choices : (propertyDetails.choices ? propertyDetails.choices : [])
             }
         });
-        const responseData = await PropertySetting.find({_id: req.body.propertyId}).populate('fieldType')
+        const responseData = await PropertySetting.find({_id: req.body.propertyId})
             .populate('groupId')
             .populate('objectType')
             .populate('createdBy');
@@ -121,7 +121,6 @@ router.get('/list', requiredAuth, async(req, res) => {
     }
     const data = await PropertySetting
     .find(query)
-    .populate('fieldType')
     .populate('groupId')
     .populate('objectType')
     .populate('createdBy');
@@ -136,7 +135,6 @@ router.get('/list', requiredAuth, async(req, res) => {
 router.get('/get-property-by-id/:propertyId', requiredAuth, async(req, res) => {
     const data = await PropertySetting
     .find({_id: req.params.propertyId, status: true})
-    .populate('fieldType')
     .populate('groupId')
     .populate('objectType')
     .populate('createdBy');
